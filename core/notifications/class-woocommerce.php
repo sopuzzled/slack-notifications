@@ -40,6 +40,7 @@ class WooCommerce extends Notification_Type {
 				'label'    => esc_html__( 'New Order', 'dorzki-notifications-to-slack' ),
 				'hooks'    => [
 					'woocommerce_checkout_order_processed' => 'new_order',
+					'woocommerce_store_api_checkout_order_processed' => 'new_order',
 				],
 				'priority' => 10,
 				'params'   => 1,
@@ -209,14 +210,15 @@ class WooCommerce extends Notification_Type {
 	 *
 	 * @return bool
 	 */
-	public function new_order( $order_id ) {
-
-		if ( empty( $order_id ) ) {
+	public function new_order( $order ) {
+		if ( empty( $order ) ) {
 			return false;
 		}
 
-		// Get order.
-		$order = wc_get_order( $order_id );
+		if ( is_numeric( $order ) ) {
+			// Old-style hook sent order ID instead of order. Get the order.
+			$order = wc_get_order( $order );
+		}
 
 		// Build notification.
 		/* translators: %1$s: Site URL, %2$s: Site Name */
