@@ -172,6 +172,14 @@ class WooCommerce extends Notification_Type {
 			],
 		];
 
+		$attachments[] = [
+			[
+				'title' => esc_html__( 'Recipient Name', 'dorzki-notifications-to-slack' ),
+				'value' => trim($order->get_shipping_first_name()  . ' ' . $order->get_shipping_last_name()),
+				'short' => false,
+			],
+		];
+
 		foreach ( $order->get_items() as $product_data ) {
 
 			$product = $product_data->get_product();
